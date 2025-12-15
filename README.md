@@ -136,6 +136,10 @@ docker compose down
 * A. **Nginx 설정에서 Upgrade 및 Connection 헤더 설정이 올바른지 확인해야 합니다. 현재 프로젝트에는 이미 적용되어 있습니다.**
 
 ---
+### DEMO
+https://github.com/YeeDochi/minigames/issues/1#issue-3729316556
+
+---
 
 👤 Author
 Yeedochi - Main Developer
