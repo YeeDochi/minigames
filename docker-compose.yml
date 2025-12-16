@@ -9,9 +9,9 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/html:/usr/share/nginx/html
-    depends_on:
-      - catchmind-app
-      - kkutu-app
+#    depends_on:
+#      - catchmind-app
+#      - kkutu-app
     networks:
       - game-network
 
