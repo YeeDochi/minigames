@@ -4,3 +4,6 @@
 [submodule "catchMind"]
 	path = catchMind
 	url = https://github.com/YeeDochi/catchMind.git
+[submodule "Oh_Mock"]
+	path = Oh_Mock
+	url = https://github.com/YeeDochi/Oh_Mock
