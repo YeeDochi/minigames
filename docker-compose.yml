@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   hub-nginx:
@@ -16,6 +15,8 @@ services:
     image: mysql:8.0
     container_name: shared-db
     restart: always
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: kkutu_db
@@ -60,6 +61,22 @@ services:
       - game-network
     env_file:
       - ./KKUTU/.env
+
+  # 오목
+  oh_mock-app:
+    build: ./Oh_Mock
+    container_name: Oh_Mock-app
+    restart: always
+    environment:
+      - SERVER_SERVLET_CONTEXT_PATH=/Oh_Mock
+
+      - SPRING_DATASOURCE_URL=jdbc:mysql://shared-db:3306/oh_mock_db?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - game-network
+    env_file:
+      - ./Oh_Mock/.env
 
 networks:
   game-network:

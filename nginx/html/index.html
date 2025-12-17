@@ -64,6 +64,18 @@
                 </td>
             </tr>
             <tr>
+                <td class="icon-col"><i class="fas fa-folder" style="color: #54aeff;"></i></td>
+                <td class="name-col"><a href="/Oh_Mock/" class="name-link" id="link-Oh_Mock">Oh!_Mock</a></td>
+                <td class="desc-col">1 대 1 이미지 오목 서비스</td>
+                <td class="status-col">
+                    <span id="dot-Oh_Mock" class="status-dot checking"></span>
+                    <span id="text-Oh_Mock" style="font-size:12px; color:var(--text-secondary);">Checking</span>
+                </td>
+                <td style="width: 60px; text-align: center;">
+                    <a href="/Oh_Mock/" id="btn-Oh_Mock" class="btn-go disabled">Go</a>
+                </td>
+            </tr>
+            <tr>
                 <td class="icon-col"><i class="far fa-file-alt"></i></td>
                 <td class="name-col">README.md</td>
                 <td class="desc-col">게임 서버 모니터링 대시보드입니다.</td>
@@ -117,6 +129,7 @@
         document.getElementById('lastCheckTime').innerText = 'Latest check: ' + new Date().toLocaleTimeString();
         checkStatus('catchmind', '/catchmind/api/rooms');
         checkStatus('kkutu', '/KKUTU/api/rooms');
+        checkStatus('Oh_Mock', '/Oh_Mock/api/rooms')
     }
     runChecks(); setInterval(runChecks, 3000);
 </script>
