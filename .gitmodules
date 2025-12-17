@@ -1,9 +1,9 @@
 [submodule "KKUTU"]
-	path = KKUTU
+	path = modules/KKUTU
 	url = https://github.com/YeeDochi/KKUTU.git
 [submodule "catchMind"]
-	path = catchMind
+	path = modules/catchMind
 	url = https://github.com/YeeDochi/catchMind.git
 [submodule "Oh_Mock"]
-	path = Oh_Mock
+	path = modules/Oh_Mock
 	url = https://github.com/YeeDochi/Oh_Mock

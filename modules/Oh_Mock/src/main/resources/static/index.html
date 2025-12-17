@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>game-hub/Oh_Mock</title>
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* 오목 전용 스타일 */
+        .room-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .room-item:first-child { border-top: none; }
+        .room-item:last-child { border-bottom: none; }
+
+        /* 오목판 크기에 맞춘 캔버스 컨테이너 (15칸 * 40px + 여백) */
+        #canvas-container {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            background: #FAFCFA;
+            width: 600px;
+            height: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #chat-container { border: 1px solid var(--border-color); border-radius: 6px; background: var(--box-bg); display: flex; flex-direction: column; height: 600px; flex: 1; }
+        #messages { flex: 1; overflow-y: auto; padding: 10px; font-size: 13px; }
+        .msg-item { padding: 4px 0; border-bottom: 1px solid var(--border-color); }
+        .msg-system { background: var(--bg-header); padding: 8px; border-radius: 6px; text-align: center; margin: 5px 0; color: var(--text-secondary); font-size: 12px; }
+        .game-layout { display: flex; gap: 20px; }
+        .game-meta { display: flex; justify-content: space-between; margin-bottom: 16px; align-items: center; }
+    </style>
+    <link rel="icon" href="https://cdn.simpleicons.org/github/ffffff" type="image/svg+xml">
+</head>
+<body>
+<div id="alert-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:2000;">
+    <div class="box" style="width:320px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div class="box-header">알림</div>
+        <div style="padding: 20px; text-align: center; color: var(--text-primary);">
+            <p id="alert-msg-text" style="margin: 0; word-break: keep-all;">메시지 내용</p>
+        </div>
+        <div style="padding:16px; border-top: 1px solid var(--border-color);">
+            <button class="btn-primary" onclick="closeAlert()" style="width: 100%;">확인</button>
+        </div>
+    </div>
+</div>
+<header>
+    <div class="repo-breadcrumb">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="30" style="border-radius:50%; opacity:1;">
+        <a href="/" class="user-name">game-hub</a>
+        <span style="color:var(--text-primary)">/</span>
+        <a href="#" class="repo-name">Oh!_Mock</a>
+        <span class="badge">Public</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">Dark</button>
+</header>
+
+<div id="login-screen" class="container" style="max-width: 400px; margin-top: 50px;">
+    <div class="box">
+        <div class="box-header">게임 입장</div>
+        <div style="padding: 20px;">
+            <label style="display:block; font-weight:600; margin-bottom: 8px;">닉네임</label>
+            <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요">
+
+            <label style="display:block; font-weight:600; margin-top: 16px; margin-bottom: 8px;">나만의 오목알 (이미지)</label>
+            <input type="file" id="skinInput" accept="image/*" style="width: 100%;">
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top:5px;">* 이미지를 올리지 않으면 기본 돌이 사용됩니다.</p>
+
+            <button class="btn-primary" onclick="uploadAndEnter()" style="width:100%; margin-top:20px;">입장하기</button>
+        </div>
+    </div>
+</div>
+
+<div id="lobby-screen" class="container hidden">
+    <div class="box">
+        <div class="box-header">
+            <span>대기실</span>
+            <span id="welcome-msg" style="font-size:12px; color: var(--text-secondary);"></span>
+        </div>
+
+        <div style="padding: 16px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); display:flex; gap:10px;">
+            <input type="text" id="roomNameInput" placeholder="방 제목 입력" value="한판 붙자!" style="flex:1;">
+            <button class="btn-primary" onclick="createRoom()">방 만들기</button>
+        </div>
+
+        <div style="max-height: 400px; overflow-y: auto;">
+            <div style="padding: 10px 16px; font-weight: 600; border-bottom: 1px solid var(--border-color); display:flex; justify-content: space-between; background-color: var(--box-bg); align-items: center;">
+                <span>방 목록</span>
+                <button class="btn-default" onclick="loadRooms()" style="font-size: 12px; padding: 4px 10px;">
+                    <i class="fas fa-sync-alt"></i> 새로고침
+                </button>
+            </div>
+            <ul id="room-list" style="list-style: none; padding: 0; margin: 0;"></ul>
+        </div>
+    </div>
+</div>
+
+<div id="game-screen" class="container hidden">
+    <div class="game-meta">
+        <div>
+            <strong id="room-title-text" style="font-size: 18px;">Room Title</strong>
+            <span id="my-stone-status" class="badge">관전 중</span>
+        </div>
+        <div>
+            <span id="turn-indicator" style="font-weight:bold; color: #d9534f; margin-right: 10px; display:none;">내 차례입니다!</span>
+            <button id="startBtn" class="btn-primary" onclick="startGame()">게임 시작</button>
+            <button class="btn-danger" onclick="exitRoom()">나가기</button>
+        </div>
+    </div>
+    <div id="player-display" style="display: flex; justify-content: space-between; margin-bottom: 10px; background: var(--box-bg); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); align-items: center;">
+
+        <div id="p1-area" style="display: flex; align-items: center; gap: 10px;">
+            <div style="position: relative;">
+                <img id="p1-img" src="https://placehold.co/40x40/000000/FFFFFF?text=B" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #000; object-fit: cover;">
+                <span style="position: absolute; bottom: -2px; right: -2px; background: #000; color: white; font-size: 10px; padding: 1px 4px; border-radius: 4px;">흑</span>
+            </div>
+            <span id="p1-name" style="font-weight: 600;">대기중...</span>
+        </div>
+
+        <div style="font-weight: bold; color: var(--text-secondary);">VS</div>
+
+        <div id="p2-area" style="display: flex; align-items: center; gap: 10px; flex-direction: row-reverse;">
+            <div style="position: relative;">
+                <img id="p2-img" src="https://placehold.co/40x40/FFFFFF/000000?text=W" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover;">
+                <span style="position: absolute; bottom: -2px; right: -2px; background: #fff; color: black; border: 1px solid #ccc; font-size: 10px; padding: 1px 4px; border-radius: 4px;">백</span>
+            </div>
+            <span id="p2-name" style="font-weight: 600;">대기중...</span>
+        </div>
+    </div>
+    <div class="game-layout">
+        <div id="canvas-container">
+            <canvas id="gameCanvas" width="600" height="600"></canvas>
+        </div>
+        <div id="chat-container">
+            <div class="box-header" style="padding: 8px 16px; font-size: 12px;">채팅</div>
+            <div id="messages"></div>
+            <div style="padding: 10px; border-top: 1px solid var(--border-color);">
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="chatInput" placeholder="메시지 입력..." onkeypress="if(event.key==='Enter') sendChat()">
+                    <button class="btn-primary" onclick="sendChat()" style="flex-shrink: 0;">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ranking-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:999;">
+    <div class="box" style="width:360px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+        <div class="box-header">🏆 게임 결과</div>
+
+        <div style="padding: 30px 20px;">
+            <img id="winnerImage" src="" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #2da44e; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <div id="winnerName" style="font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px;">USER</div>
+            <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">승리를 축하합니다!</p>
+        </div>
+
+        <div style="padding:16px; border-top: 1px solid var(--border-color);">
+            <button class="btn-primary" onclick="exitRoom()" style="width: 100%; padding: 12px; font-size: 16px;">나가기</button>
+        </div>
+    </div>
+</div>
+<script src="/Oh_Mock/game.js"></script>
+</body>
+</html>

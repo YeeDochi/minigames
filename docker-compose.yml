@@ -1,4 +1,3 @@
-
 services:
   hub-nginx:
     image: nginx:latest
@@ -26,13 +25,13 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db-data:/var/lib/mysql
-      - ./KKUTU/db-init/korean_kr.sql:/docker-entrypoint-initdb.d/korean_kr.sql
+      - ./modules/KKUTU/db-init/korean_kr.sql:/docker-entrypoint-initdb.d/korean_kr.sql
     networks:
       - game-network
 
   # 캐치마인드
   catchmind-app:
-    build: ./catchMind
+    build: ./modules/catchMind
     container_name: catchmind-app
     restart: always
     environment:
@@ -44,11 +43,11 @@ services:
     networks:
       - game-network
     env_file:
-      - ./catchMind/.env
+      - ./modules/catchMind/.env
 
   # 끄투
   kkutu-app:
-    build: ./KKUTU
+    build: ./modules/KKUTU
     container_name: kkutu-app
     restart: always
     environment:
@@ -60,11 +59,11 @@ services:
     networks:
       - game-network
     env_file:
-      - ./KKUTU/.env
+      - ./modules/KKUTU/.env
 
   # 오목
   oh_mock-app:
-    build: ./Oh_Mock
+    build: ./modules/Oh_Mock
     container_name: Oh_Mock-app
     restart: always
     environment:
@@ -76,7 +75,7 @@ services:
     networks:
       - game-network
     env_file:
-      - ./Oh_Mock/.env
+      - ./modules/Oh_Mock/.env
 
 networks:
   game-network:
