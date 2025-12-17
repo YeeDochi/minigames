@@ -1,1 +1,0 @@
-rootProject.name = "game-server-template" // 나중에 "tetris-server" 등으로 변경
