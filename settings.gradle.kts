@@ -19,4 +19,6 @@ rootProject.name = "miniGames"
 include(":modules:KKUTU")
 include(":modules:Oh_Mock")
 include(":modules:catchMind")
+include(":modules:Yacht_Dice")
+include(":modules:indian_poker")
 include("templates")

@@ -84,6 +84,17 @@ services:
     networks:
       - game-network
 
+
+  indian_poker-app:
+    build: ./modules/indian_poker
+    container_name: indian_poker-app
+    restart: always
+    environment:
+      - SERVER_SERVLET_CONTEXT_PATH=/indian_poker
+    networks:
+      - game-network
+
+
 networks:
   game-network:
     driver: bridge

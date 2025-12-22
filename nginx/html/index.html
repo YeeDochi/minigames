@@ -88,6 +88,18 @@
                 </td>
             </tr>
             <tr>
+                <td class="icon-col"><i class="fas fa-folder" style="color: #54aeff;"></i></td>
+                <td class="name-col"><a href="/indian_poker/" class="name-link" id="link-indian_poker">indian_poker</a></td>
+                <td class="desc-col">인디언 포커</td>
+                <td class="status-col">
+                    <span id="dot-indian_poker" class="status-dot checking"></span>
+                    <span id="text-indian_poker" style="font-size:12px; color:var(--text-secondary);">Checking</span>
+                </td>
+                <td style="width: 60px; text-align: center;">
+                    <a href="/indian_poker/" id="btn-indian_poker" class="btn-go disabled">Go</a>
+                </td>
+            </tr>
+            <tr>
                 <td class="icon-col"><i class="far fa-file-alt"></i></td>
                 <td class="name-col">README.md</td>
                 <td class="desc-col">게임 서버 모니터링 대시보드입니다.</td>
@@ -141,8 +153,9 @@
         document.getElementById('lastCheckTime').innerText = 'Latest check: ' + new Date().toLocaleTimeString();
         checkStatus('catchmind', '/catchmind/api/rooms');
         checkStatus('kkutu', '/KKUTU/api/rooms');
-        checkStatus('Oh_Mock', '/Oh_Mock/api/rooms')
-        checkStatus('Yacht_Dice', '/Yacht_Dice/api/rooms')
+        checkStatus('Oh_Mock', '/Oh_Mock/api/rooms');
+        checkStatus('Yacht_Dice', '/Yacht_Dice/api/rooms');
+        checkStatus('indian_poker', '/indian_poker/api/rooms');
     }
     runChecks(); setInterval(runChecks, 3000);
 </script>
