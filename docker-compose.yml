@@ -94,6 +94,14 @@ services:
     networks:
       - game-network
 
+  mahe-app:
+    build: ./modules/mahe
+    container_name: mahe-app
+    restart: always
+    environment:
+      - SERVER_SERVLET_CONTEXT_PATH=/mahe
+    networks:
+      - game-network
 
 networks:
   game-network:
