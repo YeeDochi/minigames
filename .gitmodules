@@ -13,3 +13,6 @@
 [submodule "modules/Yacht_Dice"]
 	path = modules/Yacht_Dice
 	url = https://github.com/YeeDochi/Yacht_Dice.git
+[submodule "modules/indian_poker"]
+	path = modules/indian_poker
+	url = https://github.com/YeeDochi/indian_poker
