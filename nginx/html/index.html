@@ -174,7 +174,7 @@
         const link = document.getElementById(`link-${gameId}`);
         try {
             const controller = new AbortController();
-            setTimeout(() => controller.abort(), 4000);
+            setTimeout(() => controller.abort(), 500);
             const response = await fetch(url, { method: 'HEAD', signal: controller.signal });
             if (response.ok) {
                 dot.className = 'status-dot online'; text.innerText = 'Online';
@@ -185,18 +185,18 @@
             btn.classList.add('disabled'); link.style.pointerEvents = 'none'; link.style.color = 'var(--text-secondary)';
         }
     }
-    function runChecks() {
+    async function runChecks() {
         document.getElementById('lastCheckTime').innerText = 'Latest check: ' + new Date().toLocaleTimeString();
-        checkStatus('catchmind', '/catchmind/api/rooms');
-        checkStatus('kkutu', '/KKUTU/api/rooms');
-        checkStatus('Oh_Mock', '/Oh_Mock/api/rooms');
-        checkStatus('Yacht_Dice', '/Yacht_Dice/api/rooms');
-        checkStatus('indian_poker', '/indian_poker/api/rooms');
-        checkStatus('mahe', '/mahe/api/rooms');
-        checkStatus('UNO', '/UNO/api/rooms');
-        checkStatus('Clue', '/Clue/api/rooms');
+        await checkStatus('catchmind', '/catchmind/api/rooms');
+        await checkStatus('kkutu', '/KKUTU/api/rooms');
+        await checkStatus('Oh_Mock', '/Oh_Mock/api/rooms');
+        await checkStatus('Yacht_Dice', '/Yacht_Dice/api/rooms');
+        await checkStatus('indian_poker', '/indian_poker/api/rooms');
+        await checkStatus('mahe', '/mahe/api/rooms');
+        await checkStatus('UNO', '/UNO/api/rooms');
+        await checkStatus('Clue', '/Clue/api/rooms');
     }
-    runChecks(); setInterval(runChecks, 4000);
+    runChecks(); setInterval(runChecks, 3000);
 </script>
 </body>
 </html>
