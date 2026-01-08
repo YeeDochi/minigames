@@ -121,6 +121,18 @@ services:
     networks:
       - game-network
 
+  member-app:
+    build: ./member
+    container_name: member-app
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql:jdbc:mysql://shared-db:3306/member_db?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://shared-db:3306/member_db?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - JWT_SECRET=yeedochi_minigames_secret_key_very_long_random_string_1234
+    networks:
+      - game-network
 networks:
   game-network:
     driver: bridge
