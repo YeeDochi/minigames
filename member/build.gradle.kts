@@ -14,11 +14,8 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
+    implementation("org.example:common:0.0.1-SNAPSHOT")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.projectlombok:lombok")
     "developmentOnly"("org.springframework.boot:spring-boot-devtools")

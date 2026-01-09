@@ -76,11 +76,17 @@ services:
 
 
   yacht_dice-app:
-    build: ./modules/Yacht_Dice
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_PATH: modules/Yacht_Dice
+        MODULE_NAME: Yacht_Dice
     container_name: yacht_dice-app
     restart: always
     environment:
       - SERVER_SERVLET_CONTEXT_PATH=/Yacht_Dice
+      - API_URL=http://member-app:8080
     networks:
       - game-network
 
@@ -122,7 +128,12 @@ services:
       - game-network
 
   member-app:
-    build: ./member
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_PATH: member
+        MODULE_NAME: member
     container_name: member-app
     restart: always
     environment:

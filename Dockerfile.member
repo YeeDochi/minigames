@@ -1,0 +1,17 @@
+# 1단계: 빌더 (전체 프로젝트를 복사하여 'member' 모듈을 빌드)
+FROM gradle:8.5-jdk17-alpine AS builder
+WORKDIR /app
+# 빌드에 필요한 파일들만 먼저 복사하여 Docker 캐시를 활용합니다.
+COPY build.gradle.kts settings.gradle.kts gradlew ./
+COPY gradle gradle
+# 전체 소스 코드를 복사합니다.
+COPY . .
+# 'member' 모듈의 bootJar 태스크를 실행합니다.
+RUN ./gradlew :member:bootJar --no-daemon
+
+# 2단계: 런타임 (빌드된 JAR 파일만 복사하여 가벼운 최종 이미지 생성)
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+# 빌더 스테이지에서 빌드된 member 모듈의 JAR 파일을 복사합니다.
+COPY --from=builder /app/member/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

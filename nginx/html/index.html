@@ -82,14 +82,14 @@
             </tr>
             <tr>
                 <td class="icon-col"><i class="fas fa-folder" style="color: #54aeff;"></i></td>
-                <td class="name-col"><a href="/KKUTU/" class="name-link" id="link-kkutu">KKUTU</a></td>
+                <td class="name-col"><a href="/KKUTU/" class="name-link" id="link-KKUTU">KKUTU</a></td>
                 <td class="desc-col">실시간 끝말잇기 대결 서비스</td>
                 <td class="status-col">
-                    <span id="dot-kkutu" class="status-dot checking"></span>
-                    <span id="text-kkutu" style="font-size:12px; color:var(--text-secondary);">Checking</span>
+                    <span id="dot-KKUTU" class="status-dot checking"></span>
+                    <span id="text-KKUTU" style="font-size:12px; color:var(--text-secondary);">Checking</span>
                 </td>
                 <td style="width: 60px; text-align: center;">
-                    <a href="/KKUTU/" id="btn-kkutu" class="btn-go disabled">Go</a>
+                    <a href="/KKUTU/" id="btn-KKUTU" class="btn-go disabled">Go</a>
                 </td>
             </tr>
             <tr>
@@ -296,6 +296,7 @@
             if(res.ok) {
                 localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('nickname', data.nickname);
+                localStorage.setItem('username', id);
                 setLoggedInUI(data.nickname);
                 closeModal();
                 alert('로그인 성공!');
@@ -349,7 +350,7 @@
     }
     async function runChecks() {
         document.getElementById('lastCheckTime').innerText = 'Check: ' + new Date().toLocaleTimeString();
-        const games = ['catchmind', 'kkutu', 'Oh_Mock', 'Yacht_Dice', 'indian_poker', 'mahe', 'UNO', 'Clue'];
+        const games = ['catchmind', 'KKUTU', 'Oh_Mock', 'Yacht_Dice', 'indian_poker', 'mahe', 'UNO', 'Clue'];
         // 경로는 nginx.conf 참고 (/catchmind/api/rooms 등) - 각 게임에 실제 health check용 api가 있어야 정확함.
         // 현재는 임시로 api/rooms를 찌르도록 되어 있음.
         for(const g of games) {
