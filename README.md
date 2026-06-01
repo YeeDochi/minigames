@@ -101,7 +101,7 @@ graph LR
 
 **1. 프로젝트 클론**
 ```bash
-git clone [https://github.com/username/game-hub.git](https://github.com/username/game-hub.git)
+git clone [https://github.com/YeeDochi/game-hub.git](https://github.com/YeeDochi/game-hub.git)
 cd game-hub
 ```
 **2. 컨테이너 빌드 및 실행**
